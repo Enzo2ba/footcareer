@@ -1,0 +1,968 @@
+index.html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FootCareer</title>
+<style>
+:root {
+  --bg: #080C10;
+  --bg2: #0F1318;
+  --bg3: #181D24;
+  --bg4: #1E2530;
+  --green: #00E676;
+  --green2: #00C853;
+  --green-dim: rgba(0,230,118,0.12);
+  --white: #F0F6FF;
+  --grey: #6B7685;
+  --grey2: #9AA5B4;
+  --red: #FF3D57;
+  --red-dim: rgba(255,61,87,0.12);
+  --yellow: #FFB300;
+  --blue: #448AFF;
+  --radius: 16px;
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: calc(76px + var(--safe-bottom));
+}
+::-webkit-scrollbar { display: none; }
+
+/* ── NAV ── */
+.navbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(8,12,16,0.95);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; justify-content: space-around;
+  padding: 8px 0 calc(8px + var(--safe-bottom));
+  z-index: 999;
+}
+.nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; color: var(--grey);
+  font-size: 9px; letter-spacing: 0.6px; text-transform: uppercase;
+  cursor: pointer; padding: 4px 14px; font-family: inherit; transition: color 0.2s;
+}
+.nav-btn.active { color: var(--green); }
+.nav-btn svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-btn.active svg { fill: var(--green-dim); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeUp 0.25s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 54px 18px 14px;
+  position: sticky; top: 0; background: var(--bg);
+  z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.page-header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; }
+.page-header h1 em { color: var(--green); font-style: normal; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg2); border-radius: var(--radius);
+  margin: 0 14px 12px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden;
+}
+.section-label {
+  font-size: 11px; font-weight: 700; color: var(--grey);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  padding: 0 14px; margin: 16px 0 8px;
+}
+
+/* ── HERO ── */
+.hero-card {
+  margin: 14px 14px 12px; border-radius: 20px;
+  background: linear-gradient(145deg, #0e1620 0%, #080c10 100%);
+  border: 1px solid rgba(0,230,118,0.18); overflow: hidden; position: relative;
+}
+.hero-glow {
+  position: absolute; top: -40px; left: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(0,230,118,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-top { display: flex; align-items: center; padding: 18px 18px 14px; gap: 14px; }
+.photo-ring { position: relative; flex-shrink: 0; width: 78px; height: 78px; }
+.photo-ring::before {
+  content: ''; position: absolute; inset: -2px; border-radius: 50%;
+  background: conic-gradient(var(--green) 0%, var(--blue) 50%, var(--green) 100%); z-index: 0;
+}
+.photo-inner {
+  position: relative; z-index: 1; width: 78px; height: 78px; border-radius: 50%;
+  background: var(--bg3); display: flex; align-items: center; justify-content: center;
+  overflow: hidden; border: 2px solid var(--bg);
+}
+.photo-inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.photo-inner span { font-size: 30px; }
+.rating-pip {
+  position: absolute; bottom: -2px; right: -2px; z-index: 2;
+  background: var(--green); color: #080C10;
+  font-size: 10px; font-weight: 900; border-radius: 8px; padding: 1px 5px; border: 2px solid var(--bg);
+}
+.hero-info { flex: 1; min-width: 0; }
+.hero-name { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hero-pos-wrap { display: flex; align-items: center; gap: 6px; margin: 4px 0; }
+.pos-badge { background: var(--green-dim); color: var(--green); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.hero-club { font-size: 12px; color: var(--grey2); }
+.hero-meta { font-size: 11px; color: var(--grey); margin-top: 2px; }
+.hero-age-col { text-align: right; flex-shrink: 0; }
+.hero-age-num { font-size: 26px; font-weight: 800; line-height: 1; }
+.hero-age-lbl { font-size: 10px; color: var(--grey); }
+.hero-trophies { font-size: 15px; margin-top: 4px; letter-spacing: 1px; }
+.hero-stats { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(255,255,255,0.05); }
+.hstat { text-align: center; padding: 12px 4px; border-right: 1px solid rgba(255,255,255,0.05); }
+.hstat:last-child { border-right: none; }
+.hstat .hval { font-size: 20px; font-weight: 800; color: var(--green); }
+.hstat .hlbl { font-size: 9px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* ── STATS ── */
+.stat-row {
+  display: flex; align-items: center; padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04); gap: 12px; cursor: pointer;
+  transition: background 0.15s;
+}
+.stat-row:active { background: var(--bg3); }
+.stat-row:last-child { border-bottom: none; }
+.stat-emoji { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.stat-label { flex: 1; font-size: 14px; font-weight: 600; }
+.stat-value { font-size: 20px; font-weight: 800; }
+.stat-chevron { color: var(--grey); font-size: 16px; margin-left: 2px; }
+
+/* ── STEPPER ── */
+.stepper { display: flex; align-items: center; background: var(--bg3); border-radius: 14px; overflow: hidden; margin: 8px 0 4px; }
+.step-btn { background: none; border: none; color: var(--green); font-size: 30px; font-weight: 300; line-height: 1; padding: 10px 22px; cursor: pointer; flex-shrink: 0; font-family: inherit; transition: background 0.15s; }
+.step-btn:active { background: var(--bg4); }
+.step-input { flex: 1; background: none; border: none; color: var(--white); font-size: 32px; font-weight: 800; text-align: center; outline: none; font-family: inherit; padding: 10px 0; min-width: 0; }
+
+/* ── PALMARES ── */
+.coupe-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.coupe-item:last-child { border-bottom: none; }
+.coupe-name-text { font-size: 14px; font-weight: 700; }
+.coupe-sub { font-size: 11px; color: var(--grey); margin-top: 2px; }
+.coupe-counter { display: flex; align-items: center; background: var(--bg3); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+.coupe-num { font-size: 16px; font-weight: 800; color: var(--green); padding: 5px 10px; min-width: 32px; text-align: center; }
+.c-pm { background: none; border: none; color: var(--green); font-size: 20px; padding: 5px 9px; cursor: pointer; font-family: inherit; line-height: 1; }
+.c-pm:active { background: var(--bg4); }
+.item-actions { display: flex; gap: 4px; margin-left: 4px; }
+.btn-edit-sm, .btn-del-sm {
+  background: none; border: none; cursor: pointer;
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; transition: background 0.15s;
+}
+.btn-edit-sm { color: var(--blue); }
+.btn-edit-sm:active { background: rgba(68,138,255,0.15); }
+.btn-del-sm { color: var(--red); }
+.btn-del-sm:active { background: var(--red-dim); }
+
+.trophy-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.trophy-item:last-child { border-bottom: none; }
+.trophy-icon-big { font-size: 22px; flex-shrink: 0; }
+.trophy-info { flex: 1; }
+.trophy-name-text { font-size: 14px; font-weight: 700; }
+.trophy-year-text { font-size: 11px; color: var(--grey); margin-top: 2px; }
+
+.add-row {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 13px; color: var(--green); font-size: 13px; font-weight: 700;
+  cursor: pointer; border-top: 1px solid rgba(255,255,255,0.05);
+  background: none; border-left: none; border-right: none; border-bottom: none;
+  width: 100%; font-family: inherit; transition: background 0.15s;
+}
+.add-row:active { background: var(--green-dim); }
+
+/* ── CLUBS / CARRIERE ── */
+.timeline { padding: 8px 14px 0; }
+.timeline-item { display: flex; gap: 14px; padding-bottom: 8px; position: relative; }
+.timeline-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 42px; }
+.tl-badge {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: var(--bg3); display: flex; align-items: center;
+  justify-content: center; font-size: 22px;
+  border: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+}
+.tl-line { width: 2px; flex: 1; background: rgba(255,255,255,0.06); margin-top: 6px; min-height: 20px; }
+.timeline-item:last-child .tl-line { display: none; }
+.tl-content {
+  flex: 1; background: var(--bg2); border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 12px 14px; margin-bottom: 10px; min-width: 0;
+}
+.tl-club { font-size: 15px; font-weight: 800; }
+.tl-years { font-size: 12px; color: var(--grey2); margin-top: 2px; }
+.tl-fee {
+  display: inline-block; margin-top: 6px;
+  background: var(--green-dim); color: var(--green);
+  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+}
+.tl-actions { display: flex; gap: 6px; margin-top: 10px; }
+.tl-btn {
+  flex: 1; padding: 7px; border-radius: 8px; border: none;
+  font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  transition: opacity 0.15s;
+}
+.tl-btn-edit { background: rgba(68,138,255,0.15); color: var(--blue); }
+.tl-btn-del  { background: var(--red-dim); color: var(--red); }
+.tl-btn:active { opacity: 0.7; }
+.tl-current {
+  display: inline-block; margin-left: 8px;
+  background: var(--green); color: #080C10;
+  font-size: 9px; font-weight: 900; padding: 1px 6px;
+  border-radius: 10px; letter-spacing: 0.5px; vertical-align: middle;
+}
+.clubs-add-wrap { padding: 4px 14px 20px; }
+.clubs-add-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px; border-radius: 14px;
+  background: var(--bg2); border: 1px dashed rgba(0,230,118,0.3);
+  color: var(--green); font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit; transition: background 0.15s;
+}
+.clubs-add-btn:active { background: var(--green-dim); }
+
+/* ── EDIT ── */
+.form-group { margin-bottom: 12px; }
+.form-group label { font-size: 11px; font-weight: 700; color: var(--grey); text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 6px; }
+.form-input {
+  width: 100%; background: var(--bg3); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px; color: var(--white); font-size: 15px;
+  padding: 12px 14px; outline: none; font-family: inherit; -webkit-appearance: none;
+}
+.form-input:focus { border-color: rgba(0,230,118,0.4); }
+select.form-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B7685'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.edit-pad { padding: 0 14px 24px; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); z-index: 9999;
+  align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2); border-radius: 24px 24px 0 0;
+  padding: 0 18px calc(18px + var(--safe-bottom));
+  width: 100%; max-height: 90vh; overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  animation: slideUp 0.28s cubic-bezier(.22,.68,0,1.2);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 36px; height: 4px; background: var(--bg4); border-radius: 2px; margin: 12px auto 18px; }
+.modal-title { font-size: 18px; font-weight: 800; margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.btn-cancel { flex: 1; padding: 14px; background: var(--bg3); border: none; border-radius: 14px; color: var(--grey2); font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-save { flex: 2; padding: 14px; background: var(--green); border: none; border-radius: 14px; color: #080C10; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
+.btn-save:active { background: var(--green2); }
+
+/* ── CONFIRM INLINE ── */
+.confirm-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--red-dim); border-radius: 10px;
+  padding: 8px 12px; margin-top: 8px; animation: fadeUp 0.2s ease;
+}
+.confirm-bar span { flex: 1; font-size: 12px; color: var(--red); font-weight: 600; }
+.confirm-yes { background: var(--red); color: #fff; border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.confirm-no  { background: var(--bg3); color: var(--grey2); border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+/* ── PHOTO BTN ── */
+.photo-upload-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; width: fit-content; margin: 0 auto 20px; }
+.pu-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--green); background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 36px; overflow: hidden; }
+.pu-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.pu-cam { position: absolute; bottom: 0; right: 0; background: var(--green); color: #080C10; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 13px; border: 2px solid var(--bg); }
+
+.btn-reset { width: 100%; margin-top: 10px; padding: 13px; background: none; border: 1px solid rgba(255,61,87,0.25); border-radius: 14px; color: var(--red); font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--grey); }
+.empty-state .ei { font-size: 44px; opacity: 0.4; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="page-header"><h1>⚽ Foot<em>Career</em></h1></div>
+  <div id="home-content"></div>
+</div>
+
+<!-- STATS -->
+<div class="page" id="page-stats">
+  <div class="page-header"><h1>📊 <em>Stats</em></h1></div>
+  <div id="stats-content"></div>
+</div>
+
+<!-- PALMARES -->
+<div class="page" id="page-palmares">
+  <div class="page-header"><h1>🏆 <em>Palmarès</em></h1></div>
+  <div id="palmares-content"></div>
+</div>
+
+<!-- CLUBS -->
+<div class="page" id="page-clubs">
+  <div class="page-header"><h1>🔁 <em>Carrière</em></h1></div>
+  <div id="clubs-content"></div>
+</div>
+
+<!-- EDIT -->
+<div class="page" id="page-edit">
+  <div class="page-header"><h1>👤 <em>Profil</em></h1></div>
+  <div id="edit-content"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-btn active" onclick="navigate('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H15v-5h-6v5H3z"/></svg>
+    Accueil
+  </button>
+  <button class="nav-btn" onclick="navigate('stats')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+    Stats
+  </button>
+  <button class="nav-btn" onclick="navigate('palmares')">
+    <svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5h2a2 2 0 012 2v1a5 5 0 01-5 5M7 5H5a2 2 0 00-2 2v1a5 5 0 005 5M7 5h10v6a5 5 0 01-10 0V5z"/></svg>
+    Palmarès
+  </button>
+  <button class="nav-btn" onclick="navigate('clubs')">
+    <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87"/></svg>
+    Clubs
+  </button>
+  <button class="nav-btn" onclick="navigate('edit')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    Profil
+  </button>
+</nav>
+
+<!-- MODAL STAT -->
+<div class="modal-overlay" id="modal-stat">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="stat-modal-title"></div>
+    <div id="stat-modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-stat')">Annuler</button>
+      <button class="btn-save" onclick="saveStats()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TROPHY -->
+<div class="modal-overlay" id="modal-trophy">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="trophy-modal-title">Ajouter un trophée</div>
+    <div class="form-group">
+      <label>Catégorie</label>
+      <select class="form-input" id="inp-trophy-cat">
+        <option value="coupe">🏆 Coupe / Championnat</option>
+        <option value="ballon">⭐ Récompense individuelle</option>
+        <option value="mondial">🌍 Équipe nationale</option>
+        <option value="record">📈 Record</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Nom</label>
+      <input class="form-input" id="inp-trophy-name" placeholder="Ex: Liga, Ballon d'Or…" type="text">
+    </div>
+    <div class="form-group">
+      <label>Année</label>
+      <input class="form-input" id="inp-trophy-year" placeholder="2024" type="number">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-trophy')">Annuler</button>
+      <button class="btn-save" onclick="saveTrophy()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CLUB -->
+<div class="modal-overlay" id="modal-club">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="club-modal-title">Ajouter un club</div>
+    <div class="form-group">
+      <label>Nom du club</label>
+      <input class="form-input" id="inp-club-name" placeholder="Ex: Real Madrid" type="text">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Depuis</label>
+        <input class="form-input" id="inp-club-from" placeholder="2022" type="number">
+      </div>
+      <div class="form-group">
+        <label>Jusqu'à</label>
+        <input class="form-input" id="inp-club-to" placeholder="vide = Présent" type="number">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Montant transfert</label>
+      <input class="form-input" id="inp-club-fee" placeholder="Ex: 80M€ / Gratuit / Prêt" type="text">
+    </div>
+    <div class="form-group">
+      <label>Emoji du club</label>
+      <input class="form-input" id="inp-club-emoji" placeholder="⚽" type="text" maxlength="2">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-club')">Annuler</button>
+      <button class="btn-save" onclick="saveClub()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="photoInput" accept="image/*" onchange="handlePhoto(event)" style="display:none">
+
+<script>
+// ─── DATA ───
+const DEF = {
+  prenom:'', nom:'', dob:'', nat:'', poste:'ATT',
+  pied:'Droit', taille:'', poids:'', photo:'', club:'', numero:'', note:75,
+  stats: { buts:0, passes:0, motm:0, cartonsJ:0, cartonsR:0, matchs:0, noteMoy:0 },
+  trophees: [],
+  coupes: [],
+  clubs: []
+};
+
+function load() {
+  try { const r = localStorage.getItem('fc3'); return r ? JSON.parse(r) : JSON.parse(JSON.stringify(DEF)); }
+  catch(e) { return JSON.parse(JSON.stringify(DEF)); }
+}
+function save() { try { localStorage.setItem('fc3', JSON.stringify(player)); } catch(e){} }
+
+let player = load();
+// migration
+if (!player.coupes) player.coupes = [];
+if (!player.trophees) player.trophees = [];
+if (!player.clubs) player.clubs = [];
+if (player.stats.motm === undefined) player.stats.motm = 0;
+if (player.stats.noteMoy === undefined) player.stats.noteMoy = 0;
+
+// ─── NAV ───
+const PAGES = ['home','stats','palmares','clubs','edit'];
+function navigate(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-btn')[PAGES.indexOf(p)].classList.add('active');
+  render(p);
+}
+function render(p) {
+  if (p==='home') renderHome();
+  if (p==='stats') renderStats();
+  if (p==='palmares') renderPalmares();
+  if (p==='clubs') renderClubs();
+  if (p==='edit') renderEdit();
+}
+
+// ─── HELPERS ───
+function calcAge() {
+  if (!player.dob) return '--';
+  return Math.floor((Date.now() - new Date(player.dob)) / 31557600000);
+}
+function photoEl(size) {
+  if (player.photo) return `<img src="${player.photo}" style="width:${size}px;height:${size}px;object-fit:cover;border-radius:50%;">`;
+  return `<span>👤</span>`;
+}
+function nmColor(v) {
+  if (!v) return 'var(--grey)';
+  if (v >= 8) return '#00E676'; if (v >= 7) return '#69F0AE';
+  if (v >= 6) return '#FFB300'; return '#FF3D57';
+}
+
+// ─── HOME ───
+function renderHome() {
+  const s = player.stats;
+  const fullName = (player.prenom+' '+player.nom).trim() || 'Mon Joueur';
+  const totalT = player.trophees.length + player.coupes.reduce((a,c)=>a+c.count,0);
+  const icons = [...player.coupes.filter(c=>c.count>0).map(()=>'🏆'),
+    ...player.trophees.map(t=>t.cat==='ballon'?'⭐':t.cat==='mondial'?'🌍':'📈')].slice(0,5).join('');
+
+  document.getElementById('home-content').innerHTML = `
+  <div class="hero-card">
+    <div class="hero-glow"></div>
+    <div class="hero-top">
+      <div class="photo-ring">
+        <div class="photo-inner">${photoEl(78)}</div>
+        ${player.note ? `<div class="rating-pip">${player.note}</div>` : ''}
+      </div>
+      <div class="hero-info">
+        <div class="hero-name">${fullName}</div>
+        <div class="hero-pos-wrap">
+          <span class="pos-badge">${player.poste||'ATT'}</span>
+          ${player.pied ? `<span style="font-size:11px;color:var(--grey)">Pied ${player.pied}</span>` : ''}
+        </div>
+        <div class="hero-club">${player.club||'Aucun club'}${player.numero?' · #'+player.numero:''}</div>
+        <div class="hero-meta">${player.nat||''}${player.taille?' · '+player.taille+'cm':''}${player.poids?' · '+player.poids+'kg':''}</div>
+      </div>
+      <div class="hero-age-col">
+        <div class="hero-age-num">${calcAge()}</div>
+        <div class="hero-age-lbl">ans</div>
+        ${icons ? `<div class="hero-trophies">${icons}</div>` : ''}
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hval">${s.buts}</div><div class="hlbl">Buts</div></div>
+      <div class="hstat"><div class="hval">${s.passes}</div><div class="hlbl">Passes D.</div></div>
+      <div class="hstat"><div class="hval">${s.matchs}</div><div class="hlbl">Matchs</div></div>
+      <div class="hstat"><div class="hval" style="font-size:15px">${s.cartonsJ}🟨 ${s.cartonsR}🟥</div><div class="hlbl">Cartons</div></div>
+    </div>
+  </div>
+  <div class="section-label">Vue rapide</div>
+  <div class="card">
+    <div style="display:flex">
+      <div style="flex:1;padding:14px 16px;border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:10px;color:var(--grey);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px">Note moy.</div>
+        <div style="font-size:30px;font-weight:800;color:${nmColor(s.noteMoy)}">${s.noteMoy||'—'}</div>
+      </div>
+      <div style="flex:1;padding:14px 16px;border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:10px;color:var(--grey);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px">MOTM</div>
+        <div style="font-size:30px;font-weight:800;color:var(--yellow)">${s.motm}</div>
+      </div>
+      <div style="flex:1;padding:14px 16px">
+        <div style="font-size:10px;color:var(--grey);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px">Trophées</div>
+        <div style="font-size:30px;font-weight:800;color:var(--green)">${totalT}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── STATS ───
+const STAT_DEFS = [
+  { key:'buts',     emoji:'⚽', label:'Buts',             color:'var(--green)',  dec:false },
+  { key:'passes',   emoji:'🅰️', label:'Passes décisives', color:'var(--green)',  dec:false },
+  { key:'motm',     emoji:'🌟', label:'Man of the Match', color:'var(--yellow)', dec:false },
+  { key:'matchs',   emoji:'📅', label:'Matchs joués',     color:'var(--white)',  dec:false },
+  { key:'cartonsJ', emoji:'🟨', label:'Cartons jaunes',   color:'var(--yellow)', dec:false },
+  { key:'cartonsR', emoji:'🟥', label:'Cartons rouges',   color:'var(--red)',    dec:false },
+  { key:'noteMoy',  emoji:'📋', label:'Note moyenne',     color:'dynamic',       dec:true  },
+];
+function renderStats() {
+  const s = player.stats;
+  const rows = STAT_DEFS.map(d => {
+    const col = d.color === 'dynamic' ? nmColor(s[d.key]) : d.color;
+    return `<div class="stat-row" onclick="openStatModal('${d.key}','${d.label}',${d.dec})">
+      <span class="stat-emoji">${d.emoji}</span>
+      <span class="stat-label">${d.label}</span>
+      <span class="stat-value" style="color:${col}">${s[d.key]}</span>
+      <span class="stat-chevron">›</span>
+    </div>`;
+  }).join('');
+  document.getElementById('stats-content').innerHTML = `
+  <div class="section-label">Saison en cours</div>
+  <div class="card">${rows}</div>
+  <div style="padding:0 14px 8px;text-align:center;font-size:12px;color:var(--grey)">Appuie sur une stat pour la modifier</div>`;
+}
+
+let _sKey='', _sDec=false;
+function openStatModal(key, label, dec) {
+  _sKey = key; _sDec = dec;
+  document.getElementById('stat-modal-title').textContent = label;
+  const cur = player.stats[key] || 0;
+  document.getElementById('stat-modal-body').innerHTML = `
+  <div class="stepper">
+    <button class="step-btn" onclick="stepStat(-1)">−</button>
+    <input class="step-input" id="stat-inp" type="number" value="${cur}" min="0" ${dec?'step="0.1"':'step="1"'}>
+    <button class="step-btn" onclick="stepStat(1)">+</button>
+  </div>
+  <div style="font-size:11px;color:var(--grey);text-align:center;margin-top:6px">Tape directement ou utilise + / −</div>`;
+  setTimeout(()=>{ const el=document.getElementById('stat-inp'); if(el) el.select(); },120);
+  openModal('modal-stat');
+}
+function stepStat(d) {
+  const el = document.getElementById('stat-inp');
+  let v = parseFloat(el.value)||0;
+  v = _sDec ? Math.round((v+d*0.1)*10)/10 : v+d;
+  if (v < 0) v = 0;
+  el.value = v;
+}
+function saveStats() {
+  const v = parseFloat(document.getElementById('stat-inp').value)||0;
+  player.stats[_sKey] = _sDec ? Math.round(v*10)/10 : Math.round(v);
+  save(); closeModal('modal-stat'); renderStats();
+  if (document.getElementById('page-home').classList.contains('active')) renderHome();
+  showToast('✅ Stat mise à jour');
+}
+
+// ─── PALMARES ───
+const CAT = {
+  coupe:  { label:'Coupes & Championnats',     icon:'🏆' },
+  ballon: { label:'Récompenses individuelles', icon:'⭐' },
+  mondial:{ label:'Équipe nationale',          icon:'🌍' },
+  record: { label:'Records',                   icon:'📈' },
+};
+
+let _editTrophyId = null;
+
+function renderPalmares() {
+  let html = '';
+
+  // COUPES
+  html += `<div class="section-label">${CAT.coupe.icon} ${CAT.coupe.label}</div><div class="card">`;
+  if (player.coupes.length === 0) {
+    html += `<div style="padding:16px;text-align:center;color:var(--grey);font-size:13px">Aucune coupe · Appuie sur + pour ajouter</div>`;
+  } else {
+    player.coupes.forEach((c, i) => {
+      html += `
+      <div class="coupe-item" id="coupe-item-${i}">
+        <span style="font-size:22px">🏆</span>
+        <div style="flex:1;min-width:0">
+          <div class="coupe-name-text">${c.name}</div>
+          <div class="coupe-sub">Depuis ${c.firstYear||'?'}</div>
+        </div>
+        <div class="coupe-counter">
+          <button class="c-pm" onclick="coupeDelta(${i},-1)">−</button>
+          <span class="coupe-num">${c.count}</span>
+          <button class="c-pm" onclick="coupeDelta(${i},1)">+</button>
+        </div>
+        <div class="item-actions">
+          <button class="btn-edit-sm" onclick="editCoupe(${i})" title="Modifier">✏️</button>
+          <button class="btn-del-sm"  onclick="confirmDeleteCoupe(${i})" title="Supprimer">🗑️</button>
+        </div>
+      </div>
+      <div id="confirm-coupe-${i}" style="display:none;padding:0 16px 12px"></div>`;
+    });
+  }
+  html += `<button class="add-row" onclick="openTrophyModal('coupe',null)">＋ Ajouter une coupe</button></div>`;
+
+  // AUTRES CATS
+  ['ballon','mondial','record'].forEach(cat => {
+    const items = player.trophees.filter(t => t.cat === cat).sort((a,b)=>b.year-a.year);
+    html += `<div class="section-label">${CAT[cat].icon} ${CAT[cat].label}</div><div class="card">`;
+    if (items.length === 0) {
+      html += `<div style="padding:16px;text-align:center;color:var(--grey);font-size:13px">Aucun · Appuie sur + pour ajouter</div>`;
+    } else {
+      items.forEach(t => {
+        const idx = player.trophees.findIndex(x => x.id === t.id);
+        html += `
+        <div class="trophy-item" id="trophy-item-${t.id}">
+          <span class="trophy-icon-big">${CAT[cat].icon}</span>
+          <div class="trophy-info">
+            <div class="trophy-name-text">${t.name}</div>
+            <div class="trophy-year-text">${t.year}</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-edit-sm" onclick="openTrophyModal('${cat}',${JSON.stringify(t).replace(/"/g,'&quot;')})" title="Modifier">✏️</button>
+            <button class="btn-del-sm"  onclick="confirmDeleteTrophy(${idx},'${t.id}')" title="Supprimer">🗑️</button>
+          </div>
+        </div>
+        <div id="confirm-trophy-${t.id}" style="display:none;padding:0 16px 12px"></div>`;
+      });
+    }
+    html += `<button class="add-row" onclick="openTrophyModal('${cat}',null)">＋ Ajouter</button></div>`;
+  });
+
+  document.getElementById('palmares-content').innerHTML = html;
+}
+
+function confirmDeleteCoupe(i) {
+  // Ferme autres confirms
+  document.querySelectorAll('[id^="confirm-"]').forEach(el => el.style.display='none');
+  const el = document.getElementById('confirm-coupe-'+i);
+  el.style.display = 'block';
+  el.innerHTML = `<div class="confirm-bar">
+    <span>Supprimer "${player.coupes[i].name}" ?</span>
+    <button class="confirm-no"  onclick="document.getElementById('confirm-coupe-${i}').style.display='none'">Non</button>
+    <button class="confirm-yes" onclick="doDeleteCoupe(${i})">Oui</button>
+  </div>`;
+}
+function doDeleteCoupe(i) {
+  player.coupes.splice(i,1); save(); renderPalmares(); showToast('🗑️ Coupe supprimée');
+}
+function coupeDelta(i, d) {
+  player.coupes[i].count = Math.max(0, player.coupes[i].count + d);
+  save(); renderPalmares();
+}
+
+function confirmDeleteTrophy(idx, id) {
+  document.querySelectorAll('[id^="confirm-"]').forEach(el => el.style.display='none');
+  const el = document.getElementById('confirm-trophy-'+id);
+  el.style.display = 'block';
+  el.innerHTML = `<div class="confirm-bar">
+    <span>Supprimer ce trophée ?</span>
+    <button class="confirm-no"  onclick="document.getElementById('confirm-trophy-${id}').style.display='none'">Non</button>
+    <button class="confirm-yes" onclick="doDeleteTrophy(${idx})">Oui</button>
+  </div>`;
+}
+function doDeleteTrophy(idx) {
+  if (idx < 0 || idx >= player.trophees.length) return;
+  player.trophees.splice(idx,1); save(); renderPalmares(); showToast('🗑️ Trophée supprimé');
+}
+
+let _editCoupeIdx = -1;
+function editCoupe(i) {
+  _editCoupeIdx = i;
+  const c = player.coupes[i];
+  document.getElementById('trophy-modal-title').textContent = 'Modifier la coupe';
+  document.getElementById('inp-trophy-cat').value = 'coupe';
+  document.getElementById('inp-trophy-name').value = c.name;
+  document.getElementById('inp-trophy-year').value = c.firstYear || '';
+  _editTrophyId = null;
+  openModal('modal-trophy');
+}
+
+function openTrophyModal(cat, existing) {
+  _editCoupeIdx = -1;
+  _editTrophyId = existing ? existing.id : null;
+  document.getElementById('trophy-modal-title').textContent = existing ? 'Modifier' : 'Ajouter un trophée';
+  document.getElementById('inp-trophy-cat').value = cat || 'coupe';
+  document.getElementById('inp-trophy-name').value = existing ? existing.name : '';
+  document.getElementById('inp-trophy-year').value = existing ? existing.year : '';
+  openModal('modal-trophy');
+}
+
+function saveTrophy() {
+  const cat  = document.getElementById('inp-trophy-cat').value;
+  const name = document.getElementById('inp-trophy-name').value.trim();
+  const year = document.getElementById('inp-trophy-year').value || new Date().getFullYear();
+  if (!name) { showToast('⚠️ Entre un nom'); return; }
+
+  if (cat === 'coupe') {
+    if (_editCoupeIdx >= 0) {
+      // Modification
+      player.coupes[_editCoupeIdx].name = name;
+      player.coupes[_editCoupeIdx].firstYear = year;
+    } else {
+      const exist = player.coupes.find(c => c.name.toLowerCase() === name.toLowerCase());
+      if (exist) { exist.count++; }
+      else { player.coupes.push({ id: Date.now(), name, count: 1, firstYear: year }); }
+    }
+  } else {
+    if (_editTrophyId) {
+      const t = player.trophees.find(x => x.id === _editTrophyId);
+      if (t) { t.cat = cat; t.name = name; t.year = parseInt(year); }
+    } else {
+      player.trophees.push({ id: Date.now(), cat, name, year: parseInt(year) });
+    }
+  }
+  save(); closeModal('modal-trophy'); renderPalmares();
+  showToast(_editTrophyId || _editCoupeIdx >= 0 ? '✅ Modifié' : '🏆 Ajouté');
+}
+
+// ─── CLUBS ───
+let _editClubIdx = -1;
+
+function renderClubs() {
+  let html = '';
+  if (player.clubs.length === 0) {
+    html = `<div class="empty-state"><div class="ei">🔁</div><p>Aucun club enregistré.<br>Ajoute ta carrière !</p></div>`;
+  } else {
+    html += `<div class="timeline">`;
+    [...player.clubs].reverse().forEach((c, ri) => {
+      const i = player.clubs.length - 1 - ri;
+      const isCurrent = !c.to;
+      html += `
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="tl-badge">${c.emoji||'⚽'}</div>
+          <div class="tl-line"></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="tl-content">
+            <div class="tl-club">
+              ${c.name}
+              ${isCurrent ? `<span class="tl-current">EN COURS</span>` : ''}
+            </div>
+            <div class="tl-years">${c.from||'?'} — ${c.to||'Présent'}</div>
+            ${c.fee ? `<div class="tl-fee">${c.fee}</div>` : ''}
+            <div class="tl-actions">
+              <button class="tl-btn tl-btn-edit" onclick="editClub(${i})">✏️ Modifier</button>
+              <button class="tl-btn tl-btn-del"  onclick="confirmDeleteClub(${i})">🗑️ Supprimer</button>
+            </div>
+            <div id="confirm-club-${i}" style="display:none;margin-top:8px"></div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  html += `<div class="clubs-add-wrap">
+    <button class="clubs-add-btn" onclick="openClubModal(null)">＋ Ajouter un club / transfert</button>
+  </div>`;
+  document.getElementById('clubs-content').innerHTML = html;
+}
+
+function confirmDeleteClub(i) {
+  document.querySelectorAll('[id^="confirm-club-"]').forEach(el => el.style.display='none');
+  const el = document.getElementById('confirm-club-'+i);
+  el.style.display = 'block';
+  el.innerHTML = `<div class="confirm-bar">
+    <span>Supprimer "${player.clubs[i].name}" ?</span>
+    <button class="confirm-no"  onclick="document.getElementById('confirm-club-${i}').style.display='none'">Non</button>
+    <button class="confirm-yes" onclick="doDeleteClub(${i})">Oui</button>
+  </div>`;
+}
+function doDeleteClub(i) {
+  player.clubs.splice(i,1); save(); renderClubs(); showToast('🗑️ Club supprimé');
+}
+
+function editClub(i) {
+  _editClubIdx = i;
+  const c = player.clubs[i];
+  document.getElementById('club-modal-title').textContent = 'Modifier le club';
+  document.getElementById('inp-club-name').value  = c.name;
+  document.getElementById('inp-club-from').value  = c.from || '';
+  document.getElementById('inp-club-to').value    = c.to   || '';
+  document.getElementById('inp-club-fee').value   = c.fee  || '';
+  document.getElementById('inp-club-emoji').value = c.emoji || '';
+  openModal('modal-club');
+}
+function openClubModal() {
+  _editClubIdx = -1;
+  document.getElementById('club-modal-title').textContent = 'Ajouter un club';
+  ['inp-club-name','inp-club-from','inp-club-to','inp-club-fee'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('inp-club-emoji').value = '⚽';
+  openModal('modal-club');
+}
+function saveClub() {
+  const name = document.getElementById('inp-club-name').value.trim();
+  if (!name) { showToast('⚠️ Entre un nom'); return; }
+  const data = {
+    name,
+    from:  document.getElementById('inp-club-from').value,
+    to:    document.getElementById('inp-club-to').value,
+    fee:   document.getElementById('inp-club-fee').value,
+    emoji: document.getElementById('inp-club-emoji').value || '⚽'
+  };
+  if (_editClubIdx >= 0) {
+    data.id = player.clubs[_editClubIdx].id;
+    player.clubs[_editClubIdx] = data;
+    showToast('✅ Club modifié');
+  } else {
+    data.id = Date.now();
+    player.clubs.push(data);
+    showToast('✅ Club ajouté');
+  }
+  save(); closeModal('modal-club'); renderClubs();
+}
+
+// ─── EDIT ───
+function renderEdit() {
+  document.getElementById('edit-content').innerHTML = `
+  <div class="edit-pad">
+    <div style="text-align:center;margin-bottom:20px">
+      <div class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+        <div class="pu-img">${player.photo ? `<img src="${player.photo}">` : '👤'}</div>
+        <div class="pu-cam">📷</div>
+      </div>
+      <div style="font-size:11px;color:var(--grey);margin-top:6px">Appuie pour changer la photo</div>
+    </div>
+    <div class="section-label" style="padding:0;margin:0 0 10px">Identité</div>
+    <div class="form-row">
+      <div class="form-group"><label>Prénom</label><input class="form-input" id="e-prenom" value="${player.prenom}" placeholder="Kylian" type="text"></div>
+      <div class="form-group"><label>Nom</label><input class="form-input" id="e-nom" value="${player.nom}" placeholder="Mbappé" type="text"></div>
+    </div>
+    <div class="form-group"><label>Date de naissance</label><input class="form-input" id="e-dob" value="${player.dob}" type="date"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Nationalité</label><input class="form-input" id="e-nat" value="${player.nat}" placeholder="Français 🇫🇷" type="text"></div>
+      <div class="form-group"><label>Poste</label>
+        <select class="form-input" id="e-poste">${['ATT','MIL','DEF','LB','RB','CB','CDM','CAM','LW','RW','CF','ST','GK'].map(p=>`<option value="${p}"${player.poste===p?' selected':''}>${p}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="section-label" style="padding:0;margin:14px 0 10px">Club actuel</div>
+    <div class="form-group"><label>Club</label><input class="form-input" id="e-club" value="${player.club}" placeholder="Real Madrid" type="text"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Numéro</label><input class="form-input" id="e-numero" value="${player.numero}" placeholder="10" type="number"></div>
+      <div class="form-group"><label>Pied fort</label>
+        <select class="form-input" id="e-pied">
+          <option value="Droit"${player.pied==='Droit'?' selected':''}>Droit</option>
+          <option value="Gauche"${player.pied==='Gauche'?' selected':''}>Gauche</option>
+          <option value="Les deux"${player.pied==='Les deux'?' selected':''}>Les deux</option>
+        </select>
+      </div>
+    </div>
+    <div class="section-label" style="padding:0;margin:14px 0 10px">Physique & Note</div>
+    <div class="form-row">
+      <div class="form-group"><label>Taille (cm)</label><input class="form-input" id="e-taille" value="${player.taille}" placeholder="182" type="number"></div>
+      <div class="form-group"><label>Poids (kg)</label><input class="form-input" id="e-poids" value="${player.poids}" placeholder="73" type="number"></div>
+    </div>
+    <div class="form-group"><label>Note EA Sports (1–99)</label><input class="form-input" id="e-note" value="${player.note}" placeholder="85" type="number" min="1" max="99"></div>
+    <button class="btn-save" style="width:100%;margin-top:6px;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;background:var(--green);color:#080C10" onclick="saveProfile()">💾 Enregistrer</button>
+    <button class="btn-reset" onclick="resetAll()">🗑️ Réinitialiser tout</button>
+  </div>`;
+}
+function saveProfile() {
+  player.prenom=document.getElementById('e-prenom').value;
+  player.nom=document.getElementById('e-nom').value;
+  player.dob=document.getElementById('e-dob').value;
+  player.nat=document.getElementById('e-nat').value;
+  player.poste=document.getElementById('e-poste').value;
+  player.club=document.getElementById('e-club').value;
+  player.numero=document.getElementById('e-numero').value;
+  player.pied=document.getElementById('e-pied').value;
+  player.taille=document.getElementById('e-taille').value;
+  player.poids=document.getElementById('e-poids').value;
+  player.note=document.getElementById('e-note').value;
+  save(); showToast('✅ Profil enregistré');
+}
+function resetAll() {
+  // Pas de confirm() → on utilise un state inline
+  const btn = document.querySelector('.btn-reset');
+  if (btn.dataset.confirm === '1') {
+    localStorage.removeItem('fc3');
+    player = JSON.parse(JSON.stringify(DEF));
+    renderEdit(); showToast('🗑️ Données effacées');
+  } else {
+    btn.dataset.confirm = '1';
+    btn.textContent = '⚠️ Appuie encore pour confirmer';
+    btn.style.borderColor = 'var(--red)';
+    setTimeout(() => { btn.dataset.confirm='0'; btn.textContent='🗑️ Réinitialiser tout'; btn.style.borderColor=''; }, 3000);
+  }
+}
+function handlePhoto(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => { player.photo=ev.target.result; save(); renderEdit(); showToast('📷 Photo mise à jour'); };
+  r.readAsDataURL(f);
+}
+
+// ─── MODAL ───
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target===m) closeModal(m.id); });
+});
+
+// ─── TOAST ───
+function showToast(msg) {
+  document.querySelectorAll('.fc-toast').forEach(t=>t.remove());
+  const t = document.createElement('div');
+  t.className='fc-toast';
+  t.textContent=msg;
+  Object.assign(t.style,{
+    position:'fixed',bottom:'90px',left:'50%',transform:'translateX(-50%)',
+    background:'var(--bg2)',color:'var(--white)',padding:'10px 20px',
+    borderRadius:'20px',fontSize:'14px',fontWeight:'700',
+    border:'1px solid rgba(0,230,118,0.25)',zIndex:'99999',
+    boxShadow:'0 6px 24px rgba(0,0,0,0.5)',whiteSpace:'nowrap',transition:'opacity 0.3s'
+  });
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),300); },2200);
+}
+
+// ─── INIT ───
+renderHome();
+</script>
+</body>
+</html>
